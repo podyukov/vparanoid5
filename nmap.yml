@@ -1,0 +1,22 @@
+- name: Развёртывание nmap
+  hosts: all
+  become: yes
+
+  tasks:
+    - name: Установка nmap
+      package:
+        name: nmap
+        state: present
+
+    - name: Копирование целей для сканирования
+      copy:
+        src: targets
+        dest: ~/targets
+    
+    - name: Запуск nmap
+      shell: "nmap -iL ~/targets -p 80"
+      register: nmap_result
+
+    - name: Вывод результатов nmap
+      debug:
+        msg: "{{nmap_result.stdout_lines}}"
